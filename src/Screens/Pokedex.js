@@ -1,7 +1,8 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import React, { useState, useEffect } from "react";
 import { getPokemonApi } from "../api/pokemon";
 import { getPokemonDetailsByUrlApi } from "../api/pokemon";
+import PokemonList from "../Components/PokemonList";
 
 export default function Pokedex() {
   const [pokemons, setPokemons] = useState([]);
@@ -18,10 +19,11 @@ export default function Pokedex() {
       const pokemonsArray = await Promise.all(
         response.results.map(async (pokemon) => {
           const pokemonDetails = await getPokemonDetailsByUrlApi(pokemon.url);
+
           return {
             id: pokemonDetails.id,
             name: pokemonDetails.name,
-            type: pokemonDetails.types[0].name,
+            type: pokemonDetails.types[0].type.name,
             order: pokemonDetails.order,
             image:
               pokemonDetails.sprites.other["official-artwork"].front_default,
@@ -37,7 +39,7 @@ export default function Pokedex() {
 
   return (
     <View>
-      <Text>Pokedex</Text>
+      <PokemonList pokemons={pokemons} />
     </View>
   );
 }
